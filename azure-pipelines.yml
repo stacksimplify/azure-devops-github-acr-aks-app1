@@ -15,7 +15,7 @@ variables:
   imagePullSecret: 'cgaksdevopsacr11054010-auth'
 
   # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  vmImageName: 'Linuxtesting'
 
 
 stages:
