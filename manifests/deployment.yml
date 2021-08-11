@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: shyamazuredevopsgithubacraksapp 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shyamazuredevopsgithubacraksapp
+  template:
+    metadata:
+      labels:
+        app: shyamazuredevopsgithubacraksapp 
+    spec:
+      containers:
+        - name: shyamazuredevopsgithubacraksapp 
+          image: cgaksdevopsacr.azurecr.io/shyamazuredevopsgithubacraksapp
+          ports:
+          - containerPort: 80
