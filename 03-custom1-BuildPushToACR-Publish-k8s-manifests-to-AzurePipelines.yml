@@ -1,7 +1,3 @@
-# Docker
-# Build and push an image to Azure Container Registry
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - master
 
@@ -10,23 +6,23 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '4ee05316-45b2-4c65-9574-a13237e77eb4'
-  imageRepository: 'app1/app1nginx'
-  containerRegistry: 'aksdevopsacr.azurecr.io'
+  dockerRegistryServiceConnection: 'd6ae712d-d9d8-4b2e-ac07-5015f00d75d2'
+  imageRepository: 'scutom1'
+  containerRegistry: 'cgaksdevopsacr.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
-  
+
   # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  vmImageName: 'Linuxtesting'
 
 stages:
 - stage: Build
   displayName: Build and push stage
-  jobs:  
+  jobs:
   - job: Build
     displayName: Build
     pool:
-      vmImage: $(vmImageName)
+      name: $(vmImageName)
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -37,3 +33,17 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+
+#publuc artificat
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/kube-manifests'
+        Contents: '**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        OverWrite: true
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'kube-manifests'
+        publishLocation: 'Container'
+        

@@ -1,42 +1,37 @@
-# Docker
-# Build and push an image to Azure Container Registry
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+# Stages
+# Stage-1:
+  # Task-1: Build Docker Image and push to Azure Container Registry ACR
+  # Task-2: Copy kube-manifest files to Build Artifact Directory
+  # Task-3: Publish build articats to Azure Pipelines
+# Pipeline Hierarchial Flow: Stages -> Stage -> Jobs -> Job -> Steps -> Task1, Task2, Task3  
 
 trigger:
 - master
 
-resources:
-- repo: self
-
+# Variables
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'cf9f2bef-6696-4dea-9fa3-580d9b5cab9d'
-  imageRepository: 'custom1aksnginxapp1'
-  containerRegistry: 'aksdevopsacr.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
-  
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
 
 stages:
+# Build Stage
 - stage: Build
-  displayName: Build and push stage
-  jobs:  
+  displayName: Build Stage
+  jobs:
   - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
+    displayName: Build Job
+    pool: 
+      name: Linuxtesting
+    steps:   
+    # Task-1: Build Docker Image and push to Azure Container Registry ACR
     - task: Docker@2
-      displayName: Build and push an image to container registry
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
+        containerRegistry: 'acr-shrikant'
+        repository: 'custom2aksnginxapp1'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
         tags: |
           $(tag)
+          $(Build.SourceVersion)
 ## Publish Artifacts pipeline code in addition to Build and Push          
     - bash: echo Contents in System Default Working Directory; ls -R $(System.DefaultWorkingDirectory)        
     - bash: echo Before copying Contents in Build Artifact Directory; ls -R $(Build.ArtifactStagingDirectory)        

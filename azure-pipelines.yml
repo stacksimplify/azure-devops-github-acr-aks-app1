@@ -1,7 +1,3 @@
-# Deploy to Azure Kubernetes Service
-# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - master
 
@@ -11,25 +7,25 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '569fbdc4-eae7-48e7-a717-a723d2ae03ce'
-  imageRepository: 'app1nginxaks'
-  containerRegistry: 'aksdevopsacr.azurecr.io'
+  dockerRegistryServiceConnection: '2ae50189-233f-4cbb-ba92-0b18a0a77842'
+  imageRepository: 'shyamazuredevopsgithubacraksapp'
+  containerRegistry: 'cgaksdevopsacr.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
-  imagePullSecret: 'aksdevopsacr21364011-auth'
+  imagePullSecret: 'cgaksdevopsacr11054010-auth'
 
   # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-  
+  vmImageName: 'Linuxtesting'
+
 
 stages:
 - stage: Build
   displayName: Build stage
-  jobs:  
+  jobs:
   - job: Build
     displayName: Build
     pool:
-      vmImage: $(vmImageName)
+      name: Linuxtesting
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -40,7 +36,7 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-          
+
     - upload: manifests
       artifact: manifests
 
@@ -52,8 +48,8 @@ stages:
   - deployment: Deploy
     displayName: Deploy
     pool:
-      vmImage: $(vmImageName)
-    environment: 'stacksimplifyazuredevopsgithubacraksapp1.default'
+      name: Linuxtesting
+    environment: 'shyam1986azuredevopsgithubacraksapp1-1113.aksnamspace'
     strategy:
       runOnce:
         deploy:
@@ -64,7 +60,7 @@ stages:
               action: createSecret
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-              
+
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
