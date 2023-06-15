@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app1-nginx
-          image: aksdevopsacr.azurecr.io/custom2aksnginxapp1
+          image: acraksdevops01.azurecr.io/sample-repo
           ports:
             - containerPort: 80
 ---
