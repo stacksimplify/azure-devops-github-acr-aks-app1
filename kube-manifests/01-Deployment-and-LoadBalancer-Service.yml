@@ -16,9 +16,12 @@ spec:
     spec:
       containers:
         - name: app1-nginx
-          image: aksdevopsacr.azurecr.io/custom2aksnginxapp1
+          image: sampleacrcheck.azurecr.io/sampleacrcheck:4657
           ports:
             - containerPort: 80
+      imagePullSecrets:
+        - name: acrsecret   
+   
 ---
 apiVersion: v1
 kind: Service
